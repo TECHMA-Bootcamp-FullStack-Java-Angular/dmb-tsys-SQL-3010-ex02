@@ -2,8 +2,7 @@
        EX01 - Prueba Técnica BBDD
 ******************************************/
 
-# EJERCICIO 1
-
+-- EJERCICIO 1
 
 use directores;
 -- 5.1. Mostrar el DNI, nombre y apellidos de todos los directores.
@@ -21,19 +20,18 @@ SELECT d.NomApels AS 'Director', j.NomApels AS 'Jefe' FROM directores d LEFT JOI
 -- 5.7. Mostrar el numero de despachos que están sobreutilizados.
 SELECT COUNT(*) AS 'Despachos Sobreutilizados' FROM despachos WHERE capacidad > (SELECT MAX(capacidad)  FROM despachos);
 -- 5.8. Anadir un nuevo director llamado Paco Pérez, DNI 28301700, sin jefe, y situado en el despacho 124.
-	# Se debe crae el despacho 124 con anterioridad antes de inserart el dato
+	-- Se debe crae el despacho 124 con anterioridad antes de inserart el dato
 INSERT INTO despachos ( numero , capacidad ) values( 124 , 1 ); 
 INSERT INTO directores (DNI, NomApels, DNIJefe, Despacho) VALUES ('28301700', 'Paco Pérez', NULL, 124);
 -- 5.9. Asignar a todos los empleados apellidados Pérez un nuevo jefe con DNI 74568521.
-	# El dato que se desea actulizar no exixte
+	-- El dato que se desea actulizar no exixte
 select * from directores where  DNIJefe LIKE '74568521';
 UPDATE directores SET DNIJefe = '74568521' WHERE NomApels LIKE '%Pérez%';
 -- 5.10. Despedir a todos los directores, excepto a los que no tienen jefe.
 DELETE FROM directores WHERE DNIJefe IS NOT NULL;
 
 
-
-# EJERCICIO 2
+-- EJERCICIO 2
 
 -- 6.1. Obtener los nombres de todas las piezas.
 SELECT Nombre FROM piezas;
@@ -52,7 +50,6 @@ INNER JOIN piezas ON piezas.Codigo = s.CodigoPieza WHERE s.Precio = (SELECT MAX(
 -- 6.7. Hacer constar en la base de datos que la empresa "Skellington Supplies" (codigoTNBC) va a empezar a suministrarnos tuercas (código 1) a 7 pesetas cada tuerca.
 INSERT INTO proveedores (id, Nombre) VALUES ('TNBC', 'Skellington Supplies');
 INSERT INTO suministra (CodigoPieza, IdProveedor, Precio) VALUES (1, 'TNBC', 7);
-SELECT * FROM suministra WHERE CodigoPieza = 1 AND IdProveedor = 'TNBC';
 -- 6.8. Aumentar los precios en una unidad.
 UPDATE suministra SET Precio = Precio + 1;
 -- 6.9. Hacer constar en la base de datos que la empresa "Susan Calvin Corp."(RBT) nova a suministrarnos ninguna pieza (aunque la empresa en sí va a seguir constando en nuestra base de datos).
@@ -61,9 +58,7 @@ DELETE FROM suministra WHERE IdProveedor = 'RBT';
 DELETE FROM suministra WHERE IdProveedor = 'RBT' AND CodigoPieza = 4;
 
 
-
-
-# EJERCICIO 3
+-- EJERCICIO 3
 
 -- 7.1. Sacar una relación completa de los científicos asignados a cada proyecto. Mostrar DNI, Nombre del científico, Identificador del proyecto y nombre del proyecto.
 SELECT c.DNI, c.NomApels, p.id, p.Nombre FROM asignado_a a JOIN cientificos c ON a.cientifico = c.DNI JOIN proyecto p ON a.proyecto = p.id;
@@ -74,7 +69,7 @@ SELECT p.id, p.Nombre, COUNT(a.cientifico) AS NumeroCientificosAsignados FROM pr
 -- 7.4. Obtener el numero de horas de dedicación de cada cientifico.
 SELECT c.DNI, c.NomApels, SUM(p.Horas) AS HorasDedicacion FROM cientificos c LEFT JOIN asignado_a a ON c.DNI = a.cientifico LEFT JOIN proyecto p ON a.proyecto = p.id GROUP BY c.DNI, c.NomApels;
 -- 7.5. Obtener el DNI y nombre de los científicos que se dedican a más de un proyecto y cuya dedicación media a cada proyecto sea superior a las 80 horas.
-	# No obtenemos resulatado ya que no exixte ningún cientifico que trabaje tanto alumno de BootCamp
+	-- Obtenemos un row 0 ya que no exixte ningún cientifico que trabaje tanto como un alumno de BootCamp
 SELECT c.DNI, c.NomApels FROM cientificos c WHERE 1 < (
   SELECT COUNT(*) FROM asignado_a a  WHERE c.DNI = a.cientifico) AND 80 < (
   SELECT AVG(p.Horas) FROM proyecto p JOIN asignado_a a ON p.Id = a.Proyecto WHERE c.DNI = a.cientifico);

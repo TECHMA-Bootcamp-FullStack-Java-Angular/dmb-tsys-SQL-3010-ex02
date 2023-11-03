@@ -53,7 +53,7 @@ INNER JOIN piezas ON piezas.Codigo = s.CodigoPieza WHERE s.Precio = (SELECT MAX(
 INSERT INTO proveedores (id, Nombre) VALUES ('TNBC', 'Skellington Supplies');
 INSERT INTO suministra (CodigoPieza, IdProveedor, Precio) VALUES (1, 'TNBC', 7);
 SELECT * FROM suministra WHERE CodigoPieza = 1 AND IdProveedor = 'TNBC';
--- 6.8. Aumentar los precios en una unidad.clienteclienteproveedores
+-- 6.8. Aumentar los precios en una unidad.
 UPDATE suministra SET Precio = Precio + 1;
 -- 6.9. Hacer constar en la base de datos que la empresa "Susan Calvin Corp."(RBT) nova a suministrarnos ninguna pieza (aunque la empresa en sí va a seguir constando en nuestra base de datos).
 DELETE FROM suministra WHERE IdProveedor = 'RBT';

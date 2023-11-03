@@ -1,4 +1,4 @@
-DROP  DATABASE IF EXISTS cientificos;
+DROP DATABASE IF EXISTS cientificos;
 CREATE DATABASE cientificos;
 
 USE cientificos;
@@ -89,3 +89,20 @@ insert into asignado_a(cientifico, proyecto) values('65432198','MMIO');
 insert into asignado_a(cientifico, proyecto) values('43210987','FNKU');
 insert into asignado_a(cientifico, proyecto) values('56789013','WAKT');
 insert into asignado_a(cientifico, proyecto) values('90123454','FMEP');
+
+
+# EJERCICIO 3
+
+-- 7.1. Sacar una relación completa de los científicos asignados a cada proyecto. Mostrar DNI, Nombre del científico, Identificador del proyecto y nombre del proyecto.
+SELECT c.DNI, c.NomApels, p.id, p.Nombre FROM asignado_a a JOIN cientificos c ON a.cientifico = c.DNI JOIN proyecto p ON a.proyecto = p.id;
+-- 7.2. Obtener el numero de proyectos al que está asignado cada científico (mostrar el DNI y el nombre).
+SELECT c.DNI, c.NomApels, COUNT(a.proyecto) AS NumeroProyectosAsignados FROM cientificos c LEFT JOIN asignado_a a ON c.DNI = a.cientifico GROUP BY c.DNI, c.NomApels;
+-- 7.3. Obtener el numero de científicos asignados a cada proyecto (mostrar el identificador de proyecto y el nombre del proyecto).
+SELECT p.id, p.Nombre, COUNT(a.cientifico) AS NumeroCientificosAsignados FROM proyecto p LEFT JOIN asignado_a a ON p.id = a.proyecto GROUP BY p.id, p.Nombre;
+-- 7.4. Obtener el numero de horas de dedicación de cada cientifico.
+SELECT c.DNI, c.NomApels, SUM(p.Horas) AS HorasDedicacion FROM cientificos c LEFT JOIN asignado_a a ON c.DNI = a.cientifico LEFT JOIN proyecto p ON a.proyecto = p.id GROUP BY c.DNI, c.NomApels;
+-- 7.5. Obtener el DNI y nombre de los científicos que se dedican a más de un proyecto y cuya dedicación media a cada proyecto sea superior a las 80 horas.
+	# No obtenemos resulatado ya que no exixte ningún cientifico que trabaje tanto alumno de BootCamp
+SELECT c.DNI, c.NomApels FROM cientificos c WHERE 1 < (
+  SELECT COUNT(*) FROM asignado_a a  WHERE c.DNI = a.cientifico) AND 80 < (
+  SELECT AVG(p.Horas) FROM proyecto p JOIN asignado_a a ON p.Id = a.Proyecto WHERE c.DNI = a.cientifico);

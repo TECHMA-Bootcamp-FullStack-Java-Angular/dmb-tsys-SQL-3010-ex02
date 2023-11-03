@@ -4,6 +4,8 @@
 
 # EJERCICIO 1
 
+
+use directores;
 -- 5.1. Mostrar el DNI, nombre y apellidos de todos los directores.
 SELECT DNI, NomApels AS Apelliddo FROM directores;
 -- 5.2. Mostrar los datos de los directores que no tienen jefes.
@@ -13,17 +15,23 @@ SELECT d.NomApels, de.capacidad FROM directores d, despachos de WHERE d.Despacho
 -- 5.4. Mostrar el numero de directores que hay en cada despacho.
 SELECT de.numero, COUNT(d.DNI) AS "Nº Directores" FROM despachos de LEFT JOIN directores d ON de.numero = d.Despacho GROUP BY de.numero;
 -- 5.5. Mostrar los datos de los directores cuyos jefes no tienen jefes.
-SELECT d.DNI, d.NomApels FROM directores d WHERE d.DNIJefe IS NULL OR d.DNIJefe NOT IN (SELECT DNIJefe FROM directores WHERE DNIJefe IS NOT NULL);
+SELECT d.DNI, d.NomApels FROM directores d WHERE d.DNIJefe IS NULL;
 -- 5.6. Mostrar los nombres y apellidos de los directores junto con los de su jefe.
-SELECT d.NomApels AS 'Director', j.NomApels AS 'Jefe' FROM directores d LEFT JOIN directores j ON d.DNIJefe = j.DNI;
+SELECT d.NomApels AS 'Director', j.NomApels AS 'Jefe' FROM directores d LEFT JOIN directores j ON d.DNIJefe = j.DNI  WHERE d.DNIJefe IS NOT NULL;
 -- 5.7. Mostrar el numero de despachos que están sobreutilizados.
 SELECT COUNT(*) AS 'Despachos Sobreutilizados' FROM despachos WHERE capacidad > (SELECT MAX(capacidad)  FROM despachos);
 -- 5.8. Anadir un nuevo director llamado Paco Pérez, DNI 28301700, sin jefe, y situado en el despacho 124.
+	# Se debe crae el despacho 124 con anterioridad antes de inserart el dato
+INSERT INTO despachos ( numero , capacidad ) values( 124 , 1 ); 
 INSERT INTO directores (DNI, NomApels, DNIJefe, Despacho) VALUES ('28301700', 'Paco Pérez', NULL, 124);
 -- 5.9. Asignar a todos los empleados apellidados Pérez un nuevo jefe con DNI 74568521.
+	# El dato que se desea actulizar no exixte
+select * from directores where  DNIJefe LIKE '74568521';
 UPDATE directores SET DNIJefe = '74568521' WHERE NomApels LIKE '%Pérez%';
 -- 5.10. Despedir a todos los directores, excepto a los que no tienen jefe.
 DELETE FROM directores WHERE DNIJefe IS NOT NULL;
+
+
 
 # EJERCICIO 2
 
@@ -52,6 +60,9 @@ DELETE FROM suministra WHERE IdProveedor = 'RBT';
 -- 6.10. Hacer constar en la base de datos que la empresa "Susan Calvin Corp."(RBT) ya no va a suministrarnos clavos (código 4)
 DELETE FROM suministra WHERE IdProveedor = 'RBT' AND CodigoPieza = 4;
 
+
+
+
 # EJERCICIO 3
 
 -- 7.1. Sacar una relación completa de los científicos asignados a cada proyecto. Mostrar DNI, Nombre del científico, Identificador del proyecto y nombre del proyecto.
@@ -63,6 +74,7 @@ SELECT p.id, p.Nombre, COUNT(a.cientifico) AS NumeroCientificosAsignados FROM pr
 -- 7.4. Obtener el numero de horas de dedicación de cada cientifico.
 SELECT c.DNI, c.NomApels, SUM(p.Horas) AS HorasDedicacion FROM cientificos c LEFT JOIN asignado_a a ON c.DNI = a.cientifico LEFT JOIN proyecto p ON a.proyecto = p.id GROUP BY c.DNI, c.NomApels;
 -- 7.5. Obtener el DNI y nombre de los científicos que se dedican a más de un proyecto y cuya dedicación media a cada proyecto sea superior a las 80 horas.
+	# No obtenemos resulatado ya que no exixte ningún cientifico que trabaje tanto alumno de BootCamp
 SELECT c.DNI, c.NomApels FROM cientificos c WHERE 1 < (
   SELECT COUNT(*) FROM asignado_a a  WHERE c.DNI = a.cientifico) AND 80 < (
   SELECT AVG(p.Horas) FROM proyecto p JOIN asignado_a a ON p.Id = a.Proyecto WHERE c.DNI = a.cientifico);

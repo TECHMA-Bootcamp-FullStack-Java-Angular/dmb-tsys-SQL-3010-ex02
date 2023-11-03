@@ -146,5 +146,35 @@ INSERT INTO directores (DNI, NomApels, DNIJefe, Despacho) VALUES ('90123454', 'F
 INSERT INTO directores (DNI, NomApels, DNIJefe, Despacho) VALUES ('78901235', 'Julieta Montes', '98765432', 19);
 INSERT INTO directores (DNI, NomApels, DNIJefe, Despacho) VALUES ('43210986', 'Rodrigo Benítez', '90123456', 20);
 
+/******************************************
+       EX01 - Prueba Técnica BBDD
+******************************************/
+
+# EJERCICIO 1
 
 
+use directores;
+-- 5.1. Mostrar el DNI, nombre y apellidos de todos los directores.
+SELECT DNI, NomApels AS Apelliddo FROM directores;
+-- 5.2. Mostrar los datos de los directores que no tienen jefes.
+SELECT * FROM directores WHERE DNIJefe IS NULL;
+-- 5.3. Mostrar el nombre y apellidos de cada director, junto con la capacidad del despacho en el que se encuentra.
+SELECT d.NomApels, de.capacidad FROM directores d, despachos de WHERE d.Despacho = de.numero;
+-- 5.4. Mostrar el numero de directores que hay en cada despacho.
+SELECT de.numero, COUNT(d.DNI) AS "Nº Directores" FROM despachos de LEFT JOIN directores d ON de.numero = d.Despacho GROUP BY de.numero;
+-- 5.5. Mostrar los datos de los directores cuyos jefes no tienen jefes.
+SELECT d.DNI, d.NomApels FROM directores d WHERE d.DNIJefe IS NULL;
+-- 5.6. Mostrar los nombres y apellidos de los directores junto con los de su jefe.
+SELECT d.NomApels AS 'Director', j.NomApels AS 'Jefe' FROM directores d LEFT JOIN directores j ON d.DNIJefe = j.DNI  WHERE d.DNIJefe IS NOT NULL;
+-- 5.7. Mostrar el numero de despachos que están sobreutilizados.
+SELECT COUNT(*) AS 'Despachos Sobreutilizados' FROM despachos WHERE capacidad > (SELECT MAX(capacidad)  FROM despachos);
+-- 5.8. Anadir un nuevo director llamado Paco Pérez, DNI 28301700, sin jefe, y situado en el despacho 124.
+	# Se debe crae el despacho 124 con anterioridad antes de inserart el dato
+INSERT INTO despachos ( numero , capacidad ) values( 124 , 1 ); 
+INSERT INTO directores (DNI, NomApels, DNIJefe, Despacho) VALUES ('28301700', 'Paco Pérez', NULL, 124);
+-- 5.9. Asignar a todos los empleados apellidados Pérez un nuevo jefe con DNI 74568521.
+	# El dato que se desea actulizar no exixte
+select * from directores where  DNIJefe LIKE '74568521';
+UPDATE directores SET DNIJefe = '74568521' WHERE NomApels LIKE '%Pérez%';
+-- 5.10. Despedir a todos los directores, excepto a los que no tienen jefe.
+DELETE FROM directores WHERE DNIJefe IS NOT NULL;

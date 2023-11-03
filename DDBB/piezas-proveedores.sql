@@ -178,3 +178,35 @@ insert into suministra (CodigoPieza, IdProveedor, Precio) values (26,'KRDR' , '2
 insert into suministra (CodigoPieza, IdProveedor, Precio) values (16,'SAAC' , '85');
 insert into suministra (CodigoPieza, IdProveedor, Precio) values (11,'SAAC' , '193');
 insert into suministra (CodigoPieza, IdProveedor, Precio) values (8,'KWVI' , '248');
+
+# EJERCICIO 2
+
+-- 6.1. Obtener los nombres de todas las piezas.
+SELECT Nombre FROM piezas;
+-- 6.2. Obtener todos los datos de todos los proveedores.
+SELECT * FROM proveedores;
+-- 6.3. Obtener el precio medio al que se nos suministran las piezas.
+SELECT AVG(Precio) AS PrecioMedio FROM suministra;
+-- 6.4. Obtener los nombres de los proveedores que suministran la pieza 1.
+SELECT p.Nombre FROM proveedores p INNER JOIN suministra s ON p.id = s.IdProveedor WHERE s.CodigoPieza = 1;
+-- 6.5. Obtener los nombres de las piezas suministradas por el proveedor cuyo código es HAL.
+	# Este consluta debulebe un row 0 ya que el código 'HAL' no exisite
+SELECT * FROM proveedores WHERE id = 'HAL'; 
+-- 6.6. Obtener los nombres de los proveedores que suministran las piezas más caras, indicando el nombre de la pieza y el precio al que la suministran.
+SELECT p.Nombre AS NombreProveedor, piezas.Nombre AS NombrePieza, s.Precio
+FROM proveedores p INNER JOIN suministra s ON p.id = s.IdProveedor 
+INNER JOIN piezas ON piezas.Codigo = s.CodigoPieza WHERE s.Precio = (SELECT MAX(Precio) FROM suministra);
+-- 6.7. Hacer constar en la base de datos que la empresa "Skellington Supplies" (codigoTNBC) va a empezar a suministrarnos tuercas (código 1) a 7 pesetas cada tuerca.
+	# Creamos el recurso para icluirlo en la BBDD y luego le enlafamos la tuerca con el precio asignado
+INSERT INTO proveedores (id, Nombre) VALUES ('TNBC', 'Skellington Supplies');
+INSERT INTO suministra (CodigoPieza, IdProveedor, Precio) VALUES (1, 'TNBC', 7);
+SELECT * FROM suministra WHERE CodigoPieza = 1 AND IdProveedor = 'TNBC';
+-- 6.8. Aumentar los precios en una unidad.
+UPDATE suministra SET Precio = Precio + 1;
+-- 6.9. Hacer constar en la base de datos que la empresa "Susan Calvin Corp."(RBT) nova a suministrarnos ninguna pieza (aunque la empresa en sí va a seguir constando en nuestra base de datos).
+ #  Obtenemos un row 0 porque IdProveedor con codigo 'RBT' no exite
+ INSERT INTO proveedores (id, Nombre) VALUES ('RBT', 'Susan Calvin Corp');
+ SELECT * FROM proveedores where id LIKE 'RBT';
+-- 6.10. Hacer constar en la base de datos que la empresa "Susan Calvin Corp."(RBT) ya no va a suministrarnos clavos (código 4)
+	# Esta sentencia no tiene mucho fundamento porque ya que la empresa Susan Calvin Corp. no suministra nada por el momentos
+DELETE FROM suministra WHERE IdProveedor = 'RBT' AND CodigoPieza = 4;
